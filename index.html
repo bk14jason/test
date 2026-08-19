@@ -432,8 +432,8 @@
         el.textContent = reloadLabel;
       });
 
-      // ---- Reward cooldown: after redeeming, gray the button out for 1 hour. ----
-      var COOLDOWN_MS = 60 * 60 * 1000; // 1 hour
+      // ---- Reward cooldown: after redeeming, gray the button out for 5 minutes. ----
+      var COOLDOWN_MS = 5 * 60 * 1000; // 5 minutes
       var STORE_PREFIX = "hdc-redeemed:";
       var timers = {};
 
@@ -576,7 +576,7 @@
           showStep("success");
           var check = steps.success.querySelector(".rg-pop");
           if (check) replay(check, "rg-pop");
-          // Reward consumed: gray this card out for 1 hour, then auto-reset.
+          // Reward consumed: gray this card out for 5 minutes, then auto-reset.
           if (currentCard) applyCooldown(currentCard);
         }, 900);
       });
