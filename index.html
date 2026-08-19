@@ -126,22 +126,27 @@
     .transform-style-3d { transform-style: preserve-3d; }
     .backface-hidden { backface-visibility: hidden; }
 
-    @keyframes rg-sheet-up {
-      from { transform: translateY(24px); opacity: 0; }
-      to   { transform: translateY(0); opacity: 1; }
+    @keyframes rg-dialog-in {
+      from { transform: scale(0.96); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
     }
     @keyframes rg-fade {
       from { opacity: 0; }
       to   { opacity: 1; }
     }
-    @keyframes rg-pop {
-      0%   { transform: scale(0.6); opacity: 0; }
-      60%  { transform: scale(1.08); }
+    @keyframes rg-pulse-check {
+      0%   { transform: scale(0.5); opacity: 0; }
+      60%  { transform: scale(1.12); }
       100% { transform: scale(1); opacity: 1; }
     }
-    .rg-sheet-anim { animation: rg-sheet-up 0.28s ease-out; }
+    @keyframes rg-pulse-box {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.30); }
+      50%      { box-shadow: 0 0 0 12px rgba(255, 255, 255, 0); }
+    }
+    .rg-dialog-anim { animation: rg-dialog-in 0.24s cubic-bezier(0.2, 0.8, 0.2, 1); }
     .rg-overlay-anim { animation: rg-fade 0.2s ease-out; }
-    .rg-pop { animation: rg-pop 0.45s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .rg-pulse-box { animation: rg-pulse-box 2s ease-out infinite; }
+    .rg-pulse-check { animation: rg-pulse-check 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
   </style>
 </head>
 
@@ -361,63 +366,105 @@
     </main>
   </div>
 
-  <!-- Redemption Modal -->
+  <!-- Redemption Modal (centered dialog, matching the original) -->
   <div id="redeem-modal" class="fixed inset-0 z-[100] hidden">
-    <div id="redeem-overlay" class="absolute inset-0 bg-black/50 backdrop-blur-sm rg-overlay-anim"></div>
-    <div class="absolute inset-0 flex items-end sm:items-center justify-center sm:p-4">
-      <div id="redeem-sheet" class="rg-sheet-anim relative w-full sm:max-w-sm bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden">
-        <button id="redeem-close" type="button" aria-label="Close" class="absolute top-4 right-4 z-20 text-gray-400 hover:text-gray-800 transition-opacity p-1 rounded-full focus:outline-none">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
-        </button>
+    <div id="redeem-overlay" class="absolute inset-0 bg-black/80 rg-overlay-anim"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+      <div id="redeem-panel" class="rg-dialog-anim relative w-full sm:max-w-[400px] mx-auto">
 
         <!-- Step 1: Are you at our location? -->
-        <div data-step="location" class="px-6 pt-12 pb-8 flex flex-col items-center min-h-[440px]">
+        <div data-step="location" class="w-full pt-6 pb-8 px-6 flex flex-col items-center rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-[#fdf6e0] via-[#fbf3d3] to-[#f5e6a8] relative">
+          <div class="w-full flex items-center justify-between mb-8 pt-1">
+            <div class="flex items-center justify-center gap-1.5 mx-auto pl-5">
+              <div class="h-[3.5px] w-7 rounded-full bg-black/80"></div>
+              <div class="h-[3.5px] w-7 rounded-full bg-black/10"></div>
+              <div class="h-[3.5px] w-7 rounded-full bg-black/10"></div>
+            </div>
+            <button data-action="close" type="button" aria-label="Close" class="text-gray-500 hover:text-gray-800 transition-opacity p-1 rounded-full focus:outline-none">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+            </button>
+          </div>
           <div class="w-20 h-20 bg-[#fceea4] rounded-[24px] flex items-center justify-center mb-8 shadow-sm">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-[#d97706]"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
           </div>
-          <h2 class="text-[32px] sm:text-[36px] font-black text-gray-900 text-center mb-1 leading-[1.1]">Are you at our<br>location?</h2>
+          <h2 class="text-[36px] font-black text-gray-900 text-center mb-1 leading-[1.1]">Are you at our<br>location?</h2>
           <p class="text-[15px] font-medium text-[#c27c3a] text-center mt-3 mb-0">Tap below when you visit.</p>
           <div class="w-full space-y-3 mt-auto pt-8">
             <button data-action="to-confirm" type="button" class="w-full bg-[#111827] text-white hover:bg-[#111827]/90 h-[60px] rounded-2xl text-[17px] font-bold relative flex items-center justify-center shadow-md transition-transform active:scale-[0.98]">Yes, I'm here<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 absolute right-5"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></button>
-            <button data-action="close" type="button" class="w-full h-12 text-gray-500 hover:text-gray-600 text-[15px] font-medium">Back</button>
+            <button data-action="close" type="button" class="w-full h-12 text-gray-500 hover:text-gray-600 hover:bg-transparent text-[15px] font-medium">Back</button>
           </div>
         </div>
 
         <!-- Step 2: Redeem now? -->
-        <div data-step="confirm" class="hidden px-6 pt-12 pb-8 flex flex-col items-center min-h-[440px]">
-          <div class="w-20 h-20 bg-emerald-100 rounded-[24px] flex items-center justify-center mb-8 shadow-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-emerald-600"><path d="M20 6 9 17l-5-5"></path></svg>
+        <div data-step="confirm" class="hidden w-full pt-6 pb-8 px-6 flex flex-col items-center rounded-3xl overflow-hidden shadow-2xl bg-white relative">
+          <div class="w-full flex items-center justify-between mb-8 pt-1">
+            <div class="flex items-center justify-center gap-1.5 mx-auto pl-5">
+              <div class="h-[3.5px] w-7 rounded-full bg-black/80"></div>
+              <div class="h-[3.5px] w-7 rounded-full bg-black/80"></div>
+              <div class="h-[3.5px] w-7 rounded-full bg-black/10"></div>
+            </div>
+            <button data-action="close" type="button" aria-label="Close" class="text-gray-400 hover:text-gray-600 transition-opacity p-1 rounded-full focus:outline-none">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+            </button>
           </div>
-          <h2 class="text-[32px] sm:text-[36px] font-black text-gray-900 text-center mb-1 leading-[1.1]">Redeem now?</h2>
+          <div class="w-20 h-20 bg-emerald-100 rounded-[24px] flex items-center justify-center mb-8 shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-emerald-600"><rect x="3" y="8" width="18" height="4" rx="1"></rect><path d="M12 8v13"></path><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"></path><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"></path></svg>
+          </div>
+          <h2 class="text-[36px] font-black text-gray-900 text-center mb-1 leading-[1.1]">Redeem now?</h2>
           <p class="text-[15px] font-medium text-gray-500 text-center mt-3 mb-0">Notify our staff, then tap below.</p>
           <div class="w-full space-y-3 mt-auto pt-8">
             <button data-action="do-redeem" type="button" class="w-full bg-emerald-600 text-white hover:bg-emerald-700 h-[60px] rounded-2xl text-[17px] font-bold relative flex items-center justify-center shadow-md transition-transform active:scale-[0.98] disabled:opacity-70">
-              <span data-redeem-label class="flex items-center justify-center">Redeem<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 absolute right-5"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></span>
+              <span data-redeem-label class="flex items-center justify-center">Redeem<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 absolute right-5"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path></svg></span>
               <svg data-redeem-spinner xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 animate-spin hidden"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
             </button>
-            <button data-action="close" type="button" class="w-full h-12 text-gray-500 hover:text-gray-600 text-[15px] font-medium">Back</button>
+            <button data-action="close" type="button" class="w-full h-12 text-gray-500 hover:text-gray-600 hover:bg-transparent text-[15px] font-medium">Back</button>
           </div>
         </div>
 
         <!-- Step 3: Success -->
-        <div data-step="success" class="hidden bg-emerald-600 px-6 pt-14 pb-8 flex flex-col items-center min-h-[440px]">
-          <div class="rg-pop w-20 h-20 rounded-full bg-white/15 flex items-center justify-center mb-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-10 h-10 text-white"><path d="M20 6 9 17l-5-5"></path></svg>
-          </div>
-          <h2 class="text-[28px] font-bold text-white text-center">Valid offer!</h2>
-          <p class="text-[14px] text-white/70 text-center mt-1">Show this to our staff.</p>
-          <div class="mt-5 w-full bg-white rounded-2xl px-5 py-4 shadow-[0_14px_30px_rgba(0,0,0,0.18)] text-left">
-            <div class="flex items-center justify-between">
-              <span class="text-[11.5px] font-bold uppercase tracking-widest text-green-700">Membership Reward</span>
-              <svg class="w-5 h-5 text-green-600" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8 5.8 21.3l2.4-7.4L2 9.4h7.6z"></path></svg>
+        <div data-step="success" class="hidden w-full shadow-2xl overflow-hidden flex flex-col rounded-3xl" style="min-height: 420px; background: linear-gradient(135deg, hsl(152, 76%, 42%), hsl(160, 84%, 36%));">
+          <div class="flex items-center justify-between px-6 pt-5 pb-3">
+            <div class="w-5"></div>
+            <div class="flex gap-1.5">
+              <div class="w-8 h-1 rounded-full bg-white"></div>
+              <div class="w-8 h-1 rounded-full bg-white"></div>
+              <div class="w-8 h-1 rounded-full bg-white"></div>
             </div>
-            <p data-reward-name class="text-xl font-bold text-gray-900 mt-2">Free Drink</p>
-            <p class="text-[14px] text-gray-500 mt-1">Valid for one in-store redemption.</p>
+            <button data-action="close" type="button" aria-label="Close" class="text-white/60 hover:text-white transition-colors cursor-pointer">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+            </button>
           </div>
-          <div class="w-full mt-auto pt-8">
-            <button data-action="close" type="button" class="w-full bg-white text-emerald-700 hover:bg-white/90 h-[60px] rounded-2xl text-[17px] font-bold flex items-center justify-center shadow-md transition-transform active:scale-[0.98]">Done</button>
+          <div class="flex-1 flex flex-col items-center px-5 sm:px-6 pt-2 pb-7 text-center">
+            <div class="relative w-20 h-20 rounded-full bg-white/20 border-2 border-white/25 flex items-center justify-center mb-4 overflow-hidden rg-pulse-box">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="relative w-10 h-10 text-white rg-pulse-check"><path d="M21.801 10A10 10 0 1 1 17 3.335"></path><path d="m9 11 3 3L22 4"></path></svg>
+            </div>
+            <h2 class="text-[28px] font-bold text-white text-center">Valid offer!</h2>
+            <p class="text-[14px] text-white/70 text-center mt-1">Show this to our staff.</p>
+            <div class="mt-5 w-full bg-white rounded-2xl px-5 py-4 shadow-[0_14px_30px_rgba(0,0,0,0.18)] text-left">
+              <div class="flex items-center justify-between">
+                <span class="text-[11.5px] font-bold uppercase tracking-widest text-green-700">Membership Reward</span>
+                <svg class="w-5 h-5 text-green-600" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8 5.8 21.3l2.4-7.4L2 9.4h7.6z"></path></svg>
+              </div>
+              <p data-reward-name class="text-xl font-bold text-gray-900 mt-2">Free Drink</p>
+              <p data-reward-desc class="text-[14px] text-gray-500 mt-1">Valid for one in-store redemption.</p>
+              <div class="border-t border-gray-200 my-3"></div>
+              <p data-redeem-time class="text-[14px] text-gray-600"></p>
+            </div>
+            <div class="mt-4 w-full flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                  <span class="text-[14px] font-bold text-white">YC</span>
+                </div>
+                <div class="text-left">
+                  <p class="text-[18.5px] font-bold text-white">Yin Ching Michelle Hung</p>
+                  <p class="text-[14px] text-white/50">#7520488</p>
+                </div>
+              </div>
+              <button data-action="close" type="button" class="text-[16px] text-white/70 hover:text-white transition-colors cursor-pointer">Close</button>
+            </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>
@@ -505,7 +552,7 @@
 
       // ---- Redemption modal flow: location -> confirm -> success ----
       var modal = document.getElementById("redeem-modal");
-      var sheet = document.getElementById("redeem-sheet");
+      var panel = document.getElementById("redeem-panel");
       var overlay = document.getElementById("redeem-overlay");
       var steps = {
         location: modal.querySelector('[data-step="location"]'),
@@ -513,11 +560,23 @@
         success: modal.querySelector('[data-step="success"]'),
       };
       var rewardNameEl = modal.querySelector("[data-reward-name]");
+      var rewardDescEl = modal.querySelector("[data-reward-desc]");
+      var redeemTimeEl = modal.querySelector("[data-redeem-time]");
       var doRedeemBtn = modal.querySelector('[data-action="do-redeem"]');
       var redeemLabel = modal.querySelector("[data-redeem-label]");
       var spinner = modal.querySelector("[data-redeem-spinner]");
       var currentReward = "Free Drink";
+      var currentDesc = "Valid for one in-store redemption.";
       var currentCard = null;
+
+      var MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+      function formatRedeemTime(d) {
+        var h = d.getHours(), m = d.getMinutes();
+        var ampm = h >= 12 ? "pm" : "am";
+        var hr = h % 12; if (hr === 0) hr = 12;
+        var mm = (m < 10 ? "0" : "") + m;
+        return MONTHS[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear() + " · " + hr + ":" + mm + ampm + " PT";
+      }
 
       function showStep(name) {
         Object.keys(steps).forEach(function (k) { steps[k].classList.add("hidden"); });
@@ -533,13 +592,16 @@
         spinner.classList.add("hidden");
         redeemLabel.classList.remove("hidden");
       }
-      function openModal(reward, card) {
-        currentReward = reward || "Free Drink";
+      function openModal(card) {
         currentCard = card || null;
+        var h3 = card ? card.querySelector("h3") : null;
+        var descP = card ? card.querySelector("p.text-gray-500") : null;
+        currentReward = h3 ? h3.textContent.trim() : "Free Drink";
+        currentDesc = descP ? descP.textContent.trim() : "Valid for one in-store redemption.";
         resetRedeemBtn();
         showStep("location");
         modal.classList.remove("hidden");
-        replay(sheet, "rg-sheet-anim");
+        replay(panel, "rg-dialog-anim");
         replay(overlay, "rg-overlay-anim");
         document.body.style.overflow = "hidden";
       }
@@ -553,15 +615,12 @@
       document.addEventListener("click", function (e) {
         var btn = e.target.closest("[data-redeem]");
         if (!btn) return;
-        var card = btn.closest(".group");
-        var title = card ? card.querySelector("h3") : null;
-        openModal(title ? title.textContent.trim() : "Free Drink", card);
+        openModal(btn.closest(".group"));
       });
 
       modal.querySelectorAll('[data-action="close"]').forEach(function (b) {
         b.addEventListener("click", closeModal);
       });
-      document.getElementById("redeem-close").addEventListener("click", closeModal);
       overlay.addEventListener("click", closeModal);
       modal.querySelector('[data-action="to-confirm"]').addEventListener("click", function () {
         showStep("confirm");
@@ -573,9 +632,11 @@
         spinner.classList.remove("hidden");
         setTimeout(function () {
           rewardNameEl.textContent = currentReward;
+          rewardDescEl.textContent = currentDesc;
+          redeemTimeEl.textContent = formatRedeemTime(new Date());
           showStep("success");
-          var check = steps.success.querySelector(".rg-pop");
-          if (check) replay(check, "rg-pop");
+          var check = steps.success.querySelector(".rg-pulse-check");
+          if (check) replay(check, "rg-pulse-check");
           // Reward consumed: gray this card out for 5 minutes, then auto-reset.
           if (currentCard) applyCooldown(currentCard);
         }, 900);
