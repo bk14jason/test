@@ -194,7 +194,7 @@
               <div class="relative sm:h-full w-full rounded-lg overflow-hidden shadow-md border border-orange-100/50 bg-white flex flex-col backface-hidden">
                 <div class="h-[200px] sm:h-[45%] bg-primary relative flex items-center justify-center overflow-hidden shrink-0">
                   <div class="absolute top-3 right-3 z-10 flex items-center gap-1.5 backdrop-blur-sm text-white text-[11px] font-bold tracking-wide uppercase px-3 py-1.5 rounded-full select-none bg-black/40">
-                    <span>★</span><span>3 left · Reloads <span data-reload-next-month>Sep 1</span></span>
+                    <span>★</span><span>3 left · Reloads <span data-reload-date>Sep 10</span></span>
                   </div>
                   <img src="images/reward-6-drinks.png" alt="6 Drinks Per Month" class="absolute inset-0 w-full h-full object-cover" />
                   <div class="absolute inset-0 bg-primary/10 mix-blend-multiply"></div>
@@ -218,7 +218,7 @@
               <div class="relative sm:h-full w-full rounded-lg overflow-hidden shadow-md border border-orange-100/50 bg-white flex flex-col backface-hidden">
                 <div class="h-[200px] sm:h-[45%] bg-primary relative flex items-center justify-center overflow-hidden shrink-0">
                   <div class="absolute top-3 right-3 z-10 flex items-center gap-1.5 backdrop-blur-sm text-white text-[11px] font-bold tracking-wide uppercase px-3 py-1.5 rounded-full select-none bg-black/40">
-                    <span>★</span><span>1 left · Reloads <span data-reload-next-month>Sep 1</span></span>
+                    <span>★</span><span>1 left · Reloads <span data-reload-date>Sep 10</span></span>
                   </div>
                   <img src="images/reward-bogo.png" alt="BOGO Drink for a Friend" class="absolute inset-0 w-full h-full object-cover" />
                   <div class="absolute inset-0 bg-primary/10 mix-blend-multiply"></div>
@@ -471,11 +471,9 @@
 
   <script>
     (function () {
-      // Reload badge date: first day of next month, based on today.
-      var now = new Date();
-      var firstOfNextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-      var reloadLabel = firstOfNextMonth.toLocaleDateString("en-US", { month: "short" }) + " 1";
-      document.querySelectorAll("[data-reload-next-month]").forEach(function (el) {
+      // Reload badge date for monthly rewards.
+      var reloadLabel = "Sep 10";
+      document.querySelectorAll("[data-reload-date]").forEach(function (el) {
         el.textContent = reloadLabel;
       });
 
